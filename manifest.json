@@ -3,7 +3,7 @@
   "name": "TikTok Auto Accept",
   "version": "1.0",
   "description": "Auto accept message requests TikTok",
-  "permissions": ["scripting", "activeTab"],
+  "permissions": ["scripting", "activeTab", "tabs"],
   "host_permissions": [
     "https://www.tiktok.com/*"
   ],

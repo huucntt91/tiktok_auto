@@ -3,7 +3,8 @@ let running = false;
 chrome.runtime.onMessage.addListener((msg) => {
     if (msg.action === "START") {
         running = true;
-        startAuto();
+        // Bắt đầu chạy
+        autoAcceptMessageRequests();
     }
 
     if (msg.action === "STOP") {
@@ -12,83 +13,73 @@ chrome.runtime.onMessage.addListener((msg) => {
     }
 });
 
-async function startAuto() {
-    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+// Hàm tạo độ trễ cơ bản
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    console.log("🚀 Start Auto Accept...");
+async function autoAcceptMessageRequests() {
+    console.log("Bắt đầu tiến trình tự động chấp nhận tin nhắn...");
+    let count = 0;
 
-    while (running) {
+    while (true) {
         try {
-            // ========================
-            // B1: Lưu list ngoài
-            // ========================
-            const getItems = () =>
-                Array.from(document.querySelectorAll('[data-e2e="dm-new-conversation-item"]'));
+            console.log("----------------------------------");
 
-            const oldItems = getItems();
-
-            // ========================
-            // B2: Click "Yêu cầu tin nhắn"
-            // ========================
-            let clicked = false;
-
-            for (let el of document.querySelectorAll('div[class*="DivRequestGroup"]')) {
-                if (el.innerText.includes("Yêu cầu tin nhắn")) {
-                    el.click();
-                    clicked = true;
-                    break;
-                }
+            // ==========================================
+            // BƯỚC 1: Tìm và click "Yêu cầu tin nhắn"
+            // ==========================================
+            const requestBtn = document.querySelector('div[class*="DivRequestInfo"]');
+            if (requestBtn) {
+                requestBtn.click();
+                console.log("B1: Đã click 'Yêu cầu tin nhắn'");
+            }else {
+                console.log("Cảnh báo: Không tìm thấy nút 'Yêu cầu tin nhắn', có thể đã hết yêu cầu hoặc giao diện đã thay đổi.");
+                break;
             }
 
-            if (!clicked) {
-                console.log("❌ Không tìm thấy request tab");
-                await sleep(3000);
-                continue;
+            await wait(5000);
+            // ==========================================
+            // BƯỚC 2: Chờ Danh sách 2 xuất hiện (Smart Wait)
+            // ==========================================
+            const containers = document.querySelector('div[id*="more-acton-icon"]');
+            if (containers) {
+                console.log("B2: Đã thấy khung chat hiện ra");
+                containers.click();
+            } else {
+                console.log("Cảnh báo: Không tìm thấy khung chat, có thể đã bị chặn hoặc lỗi giao diện.");
+                break;
             }
+            await wait(1500);
 
-            // ========================
-            // B3: Đợi list trong
-            // ========================
-            let insideItems = [];
-
-            for (let i = 0; i < 10; i++) {
-                await sleep(1000);
-
-                const current = getItems();
-                insideItems = current.filter(el => !oldItems.includes(el));
-
-                if (insideItems.length > 0) break;
-            }
-
-            if (!insideItems.length) {
-                console.log("❌ Không có request");
-                await sleep(3000);
-                continue;
-            }
-
-            // ========================
-            // B4: Click item đầu
-            // ========================
-            insideItems[0].click();
-            await sleep(2000);
-
-            // ========================
-            // B5: Click accept
-            // ========================
-            const acceptBtn = Array.from(document.querySelectorAll('div[role="button"]'))
-                .find(btn => btn.innerText.trim() === "Chấp nhận");
+            // ==========================================
+            // BƯỚC 3: Chờ nút "Chấp nhận" xuất hiện (Smart Wait)
+            // ==========================================
+            const acceptBtn = document.evaluate(
+                "//div[contains(text(), 'Chấp nhận')]",
+                document,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+            ).singleNodeValue;
 
             if (acceptBtn) {
                 acceptBtn.click();
-                console.log("✅ Accepted");
+                count++;
+                console.log(`B3: Đã click 'Chấp nhận' thành công (Tổng: ${count} người)`);
             } else {
-                console.log("⚠️ Không thấy nút accept");
+                console.log("Cảnh báo: Không tìm thấy nút 'Chấp nhận' cho người này (Có thể tài khoản bị chặn).");
+                break;
             }
 
-            await sleep(3000);
+            await wait(3000);
 
-        } catch (err) {
-            console.error("❌ Error:", err);
+        } catch (error) {
+            console.error("Đã xảy ra lỗi hệ thống:", error);
+            break;
         }
     }
+    console.log("Đã dừng tiến trình tự động.");
 }
+
+//autoAcceptMessageRequests();
+
+
