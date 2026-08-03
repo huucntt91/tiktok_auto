@@ -1,15 +1,120 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <style>
-    body { font-family: Arial; width: 200px; padding: 10px; }
-    button { width: 100%; padding: 10px; margin-top: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      width: 260px;
+      padding: 12px;
+      background: #111;
+      color: #fff;
+    }
+    h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #fe2c55;
+      text-align: center;
+    }
+    .section {
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 11px;
+      color: #aaa;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 12px;
+      resize: vertical;
+      min-height: 60px;
+      margin-bottom: 8px;
+    }
+    .interval-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .interval-row label {
+      font-size: 12px;
+      color: #ccc;
+      white-space: nowrap;
+    }
+    .interval-row input[type=number] {
+      width: 56px;
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 5px 6px;
+      font-size: 12px;
+      text-align: center;
+    }
+    .interval-row input[type=number]:focus {
+      outline: none;
+      border-color: #fe2c55;
+    }
+    button {
+      width: 100%;
+      padding: 9px;
+      margin-top: 6px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.85; }
+    .btn-start  { background: #28a745; color: #fff; }
+    .btn-stop   { background: #dc3545; color: #fff; }
+    .btn-live-start { background: #fe2c55; color: #fff; }
+    .btn-live-stop  { background: #555; color: #fff; }
+    #status {
+      font-size: 11px;
+      color: #aaa;
+      text-align: center;
+      margin-top: 6px;
+    }
   </style>
 </head>
 <body>
-  <h3>TikTok Tool</h3>
-  <button id="start">Start</button>
-  <button id="stop">Stop</button>
+  <h3>🎵 TikTok Auto Tool</h3>
+
+  <div class="section">
+    <div class="section-title">📩 Tự động chấp nhận tin nhắn</div>
+    <button id="start" class="btn-start">▶ Bắt đầu</button>
+    <button id="stop" class="btn-stop">⛔ Dừng</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔴 Tự động gửi tin nhắn Live</div>
+    <textarea id="liveMessage">@2K9, 2K10 có thể tìm FB "Học Văn Chị Tấm" để tham khảo lộ trình XPS nhé !!!</textarea>
+    <div class="interval-row">
+      <label>⏱ Gửi lại sau:</label>
+      <input type="number" id="intervalMin" value="3" min="1" max="60" step="1">
+      <label>phút ±</label>
+      <input type="number" id="intervalVariance" value="15" min="0" max="120" step="5">
+      <label>giây</label>
+    </div>
+    <button id="startLive" class="btn-live-start">▶ Bắt đầu gửi Live</button>
+    <button id="stopLive" class="btn-live-stop">⛔ Dừng gửi Live</button>
+  </div>
+
+  <div id="status">Sẵn sàng</div>
 
   <script src="popup.js"></script>
 </body>

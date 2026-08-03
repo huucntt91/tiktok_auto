@@ -1,9 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "TikTok Auto Accept",
-  "version": "1.0",
-  "description": "Auto accept message requests TikTok",
-  "permissions": ["scripting", "activeTab", "tabs"],
+  "name": "TikTok Auto Tool",
+  "version": "2.0",
+  "description": "Auto accept messages & auto send on TikTok Live",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "tabs"
+  ],
   "host_permissions": [
     "https://www.tiktok.com/*"
   ],
@@ -12,8 +16,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.tiktok.com/messages*"],
-      "js": ["content.js"]
+      "matches": [
+        "https://www.tiktok.com/@hocvanchitam/live*"
+      ],
+      "js": [
+        "content.js"
+      ]
     }
   ]
 }
